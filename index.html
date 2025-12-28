@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Cinema</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+/* FRAME */
+.story{
+  width:360px;
+  height:640px;
+  background:#000;
+  border-radius:30px;
+  overflow:hidden;
+  position:relative;
+  color:#fff;
+}
+
+/* ========== START OVERLAY (FIXED & CLEAR) ========== */
+.start-overlay{
+  position:absolute;
+  inset:0;
+  background:#000;                 /* SOLID – NO BLUR */
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  cursor:pointer;
+}
+
+/* CARD START */
+.start-card{
+  padding:18px 26px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.2);
+  text-align:center;
+}
+
+/* TEXT START (NO ANIMATION DISTORTION) */
+.start-text{
+  font-size:18px;
+  letter-spacing:2px;
+  color:#fff;
+}
+
+/* SUBTEXT */
+.start-sub{
+  margin-top:8px;
+  font-size:12px;
+  opacity:.7;
+}
+
+/* FILM GRAIN */
+.story::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity:.05;
+  pointer-events:none;
+}
+
+/* SCENE */
+.scene{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  transition:1.6s cubic-bezier(.4,0,.2,1);
+}
+.hidden{
+  opacity:0;
+  transform:scale(1.05);
+  pointer-events:none;
+}
+
+/* OPENING */
+.opening-text{
+  font-size:18px;
+  letter-spacing:3px;
+  opacity:0;
+  animation:fadeIn 3s forwards;
+  text-align:center;
+  padding:0 20px;
+}
+@keyframes fadeIn{to{opacity:1}}
+
+/* GALLERY */
+.gallery{position:absolute;inset:0}
+.polaroid{
+  width:170px;
+  background:#fff;
+  padding:12px;
+  position:absolute;
+  box-shadow:0 25px 45px rgba(0,0,0,.65);
+  opacity:0;
+  transform:translateY(40px) rotate(var(--r));
+  animation:floatIn 1.4s forwards, float 6s ease-in-out infinite;
+}
+.polaroid img{width:100%;display:block}
+
+.polaroid:nth-child(1){top:80px;left:20px;--r:-6deg}
+.polaroid:nth-child(2){top:50px;right:20px;--r:5deg;animation-delay:.4s}
+.polaroid:nth-child(3){bottom:170px;left:30px;--r:6deg;animation-delay:.8s}
+.polaroid:nth-child(4){bottom:140px;right:30px;--r:-5deg;animation-delay:1.2s}
+
+@keyframes floatIn{to{opacity:1;transform:translateY(0) rotate(var(--r))}}
+@keyframes float{
+  0%,100%{transform:translateY(0) rotate(var(--r))}
+  50%{transform:translateY(-10px) rotate(var(--r))}
+}
+
+/* VIDEO */
+.video-wrap{position:absolute;inset:0}
+.video-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:blur(26px) brightness(.35);
+}
+#video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+/* CAPTION */
+.caption{
+  position:absolute;
+  bottom:50px;
+  font-size:15px;
+  letter-spacing:1px;
+  text-align:center;
+  padding:0 20px;
+}
+
+/* REPLAY */
+.replay{
+  position:absolute;
+  top:16px;
+  right:16px;
+  font-size:12px;
+  padding:6px 16px;
+  border-radius:30px;
+  background:rgba(255,255,255,.2);
+  cursor:pointer;
+  backdrop-filter:blur(8px);
+}
+</style>
+</head>
+
+<body>
+
+<div class="story">
+
+  <!-- START SCREEN -->
+  <div class="start-overlay" id="start">
+    <div class="start-card">
+      <div class="start-text">heyy cantik klik start</div>
+      <div class="start-sub">dari Rendra pangganteng na sebandungen😎</div>
+    </div>
+  </div>
+
+  <!-- OPENING -->
+  <div class="scene" id="opening">
+    <div class="opening-text">
+      si peri yang slendang nya<br>ketinggalan ✨
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="scene hidden" id="gallery">
+    <div class="gallery">
+      <div class="polaroid"><img src="a.jpeg"></div>
+      <div class="polaroid"><img src="h.jpeg"></div>
+      <div class="polaroid"><img src="l.jpeg"></div>
+      <div class="polaroid"><img src="m.jpeg"></div>
+    </div>
+    <div class="caption">anomali si pembuat pabrik gula bangkrut 🥰</div>
+  </div>
+
+  <!-- VIDEO -->
+  <div class="scene hidden" id="videoScene">
+    <div class="video-wrap">
+      <video class="video-bg" src="video.mp4" autoplay muted loop></video>
+      <video id="video" src="video.mp4" loop></video>
+    </div>
+    <div class="caption">wey wey bagoyang dia 😭</div>
+    <div class="replay" onclick="location.reload()">Replay</div>
+  </div>
+
+  <!-- MUSIC -->
+  <audio id="music" src="nala.mp3"></audio>
+
+</div>
+
+<script>
+const start = document.getElementById('start');
+const opening = document.getElementById('opening');
+const gallery = document.getElementById('gallery');
+const videoScene = document.getElementById('videoScene');
+const music = document.getElementById('music');
+const video = document.getElementById('video');
+
+function fadeIn(audio,target=.8){
+  audio.volume=0;
+  const i=setInterval(()=>{
+    if(audio.volume>=target){clearInterval(i);return;}
+    audio.volume+=.02;
+  },120);
+}
+function fadeOut(audio,cb){
+  const i=setInterval(()=>{
+    if(audio.volume<=.02){
+      audio.pause();audio.volume=0;clearInterval(i);
+      if(cb)cb();return;
+    }
+    audio.volume-=.02;
+  },120);
+}
+
+/* USER CLICK */
+start.addEventListener('click',()=>{
+  start.style.display='none';
+
+  music.play();
+  fadeIn(music);
+
+  setTimeout(()=>{
+    opening.classList.add('hidden');
+    gallery.classList.remove('hidden');
+
+    setTimeout(()=>{
+      gallery.classList.add('hidden');
+      videoScene.classList.remove('hidden');
+
+      fadeOut(music,()=>{
+        video.muted=false;
+        video.play();
+      });
+    },7000);
+  },3000);
+});
+</script>
+
+</body>
+</html>
